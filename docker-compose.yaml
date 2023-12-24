@@ -1,0 +1,76 @@
+version: "3"
+services:
+  reactivedb:
+    container_name: reactivedb
+    image: mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=reactive
+      - MARIADB_PASSWORD=root
+      - MARIADB_USERNAME=root
+    ports:
+      - "3306:3306"
+    restart: on-failure  
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: my-php-myadmin
+    ports:
+      - "8092:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - MYSQL_USERNAME=root
+      - MARIADB_ROOT_PASSWORD=root
+    restart: on-failure  
+    depends_on:
+      - reactivedb
+      
+      
+  banking-service:
+    container_name: banking-service
+    image: faisalkhan16/banking-service:1
+    pull_policy: always
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=reactivedb
+      - DB_PORT=3306
+    depends_on:
+      - reactivedb
+      - user-notification-service
+      - reporting-service
+      - account-management-service
+  user-notification-service:
+    container_name: user-notification-service
+    image: faisalkhan16/user-notification-service:1
+    pull_policy: always
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_HOST=reactivedb
+      - DB_PORT=3306  
+    depends_on:
+      - reactivedb
+  reporting-service:
+    container_name: reporting-service
+    image: faisalkhan16/reporting-service:1
+    pull_policy: always
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_HOST=reactivedb
+      - DB_PORT=3306  
+    depends_on:
+      - reactivedb
+  account-management-service:
+    container_name: account-management-service
+    image: faisalkhan16/account-management-service:1
+    pull_policy: always
+    ports:
+      - "8083:8083"
+    environment:
+      - DB_HOST=reactivedb
+      - DB_PORT=3306  
+    depends_on:
+      - reactivedb
