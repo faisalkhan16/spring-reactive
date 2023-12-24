@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -20,9 +21,8 @@ public class ReportingController {
     private ReportingService reportingService;
 
     @PostMapping("/")
-    public ResponseEntity<Transaction> report(@RequestBody Transaction transaction) {
+    public Mono<Transaction> report(@RequestBody Transaction transaction) {
         log.info("Process transaction with details: {}", transaction);
-        Transaction processed = reportingService.report(transaction);
-        return ResponseEntity.ok(processed);
+        return reportingService.report(transaction);
     }
 }

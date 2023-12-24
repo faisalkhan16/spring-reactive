@@ -29,7 +29,7 @@ services:
       
   banking-service:
     container_name: banking-service
-    image: faisalkhan16/banking-service:1
+    image: faisalkhan16/banking-service:2
     pull_policy: always
     ports:
       - "8080:8080"
@@ -43,7 +43,7 @@ services:
       - account-management-service
   user-notification-service:
     container_name: user-notification-service
-    image: faisalkhan16/user-notification-service:1
+    image: faisalkhan16/user-notification-service:2
     pull_policy: always
     ports:
       - "8081:8081"
@@ -54,7 +54,7 @@ services:
       - reactivedb
   reporting-service:
     container_name: reporting-service
-    image: faisalkhan16/reporting-service:1
+    image: faisalkhan16/reporting-service:2
     pull_policy: always
     ports:
       - "8082:8082"
@@ -65,7 +65,7 @@ services:
       - reactivedb
   account-management-service:
     container_name: account-management-service
-    image: faisalkhan16/account-management-service:1
+    image: faisalkhan16/account-management-service:2
     pull_policy: always
     ports:
       - "8083:8083"

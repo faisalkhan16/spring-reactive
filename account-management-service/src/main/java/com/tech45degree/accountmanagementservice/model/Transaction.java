@@ -17,7 +17,6 @@ public class Transaction {
     @Id
     @JsonProperty("transaction_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long transactionId;
     private String date;
 

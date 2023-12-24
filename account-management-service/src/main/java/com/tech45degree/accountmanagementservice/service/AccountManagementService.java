@@ -8,6 +8,11 @@ import com.tech45degree.accountmanagementservice.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -19,15 +24,27 @@ public class AccountManagementService {
     @Autowired
     private UserRepository userRepo;
 
-    public Transaction manage(Transaction transaction) {
-        if (transaction.getStatus().equals(TransactionStatus.VALID)) {
-            transaction.setStatus(TransactionStatus.SUCCESS);
-            transactionRepo.save(transaction);
+    public Mono<Transaction> manage(Transaction transaction)
+    {
 
-            User user = userRepo.findByCardId(transaction.getCardId());
-            user.getValidTransactions().add(transaction);
-            userRepo.save(user);
-        }
-        return transaction;
+        return Mono.just(userRepo.findByCardId(transaction.getCardId()))
+                .map(u -> {
+                    if (transaction.getStatus().equals(TransactionStatus.VALID))
+                    {
+                        transaction.setStatus(TransactionStatus.SUCCESS);
+                        List<Transaction> transactionList = new ArrayList<>();
+                        transactionList.add(transaction);
+                        if (Objects.isNull(u.getValidTransactions())
+                                || u.getValidTransactions().isEmpty()) {
+                            u.setValidTransactions(transactionList);
+                        } else {
+                            u.getValidTransactions().add(transaction);
+                        }
+                        log.info("User details: {}", u);
+                        userRepo.save(u);
+                    }
+                    transactionRepo.save(transaction);
+                    return transaction;
+                });
     }
 }

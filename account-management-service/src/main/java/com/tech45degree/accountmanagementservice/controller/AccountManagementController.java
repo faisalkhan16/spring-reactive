@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -20,13 +21,9 @@ public class AccountManagementController {
     private AccountManagementService accountManagementService;
 
     @PostMapping("/process")
-    public ResponseEntity<Transaction> manage(@RequestBody Transaction transaction) {
+    public Mono<Transaction> manage(@RequestBody Transaction transaction) {
         log.info("Process transaction with details: {}", transaction);
-        Transaction processed = accountManagementService.manage(transaction);
-        if (processed.getStatus().equals(TransactionStatus.SUCCESS)) {
-            return ResponseEntity.ok(processed);
-        } else {
-            return ResponseEntity.internalServerError().body(processed);
-        }
+        Mono<Transaction> transactionMono = accountManagementService.manage(transaction);
+        return transactionMono;
     }
 }

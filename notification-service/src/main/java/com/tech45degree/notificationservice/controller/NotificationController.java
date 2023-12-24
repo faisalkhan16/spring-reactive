@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @Slf4j
@@ -20,9 +21,9 @@ public class NotificationController {
     private UserNotificationService userNotificationService;
 
     @PostMapping("/fraudulent-transaction")
-    public ResponseEntity<Transaction> notify(@RequestBody Transaction transaction) {
+    public Mono<Transaction> notify(@RequestBody Transaction transaction) {
         log.info("Process transaction with details and notify user: {}", transaction);
-        Transaction processed = userNotificationService.notify(transaction);
-        return ResponseEntity.ok(processed);
+        Mono<Transaction> transactionMono = userNotificationService.notify(transaction);
+        return transactionMono;
     }
 }
