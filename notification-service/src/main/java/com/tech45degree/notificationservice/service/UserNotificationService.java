@@ -31,7 +31,7 @@ public class UserNotificationService {
             User user = userRepo.findByCardId(transaction.getCardId());
 
             // Notify user by sending email
-           /* SimpleMailMessage message = new SimpleMailMessage();
+            SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("noreply@baeldung.com");
             message.setTo(user.getEmail());
             message.setSubject("Fraudulent transaction attempt from your card");
@@ -39,8 +39,8 @@ public class UserNotificationService {
                     + " from card " + transaction.getCardId() + " in the country "
                     + transaction.getTransactionLocation() + "." +
                     " Please report to your bank or block your card.");
-            emailSender.send(message);*/
-            log.info("Email Send to: ",user.getEmail());
+            //emailSender.send(message);
+            log.info("Email Send to: {}",user.getEmail());
             transaction.setStatus(TransactionStatus.FRAUDULENT_NOTIFY_SUCCESS);
         } else {
             transaction.setStatus(TransactionStatus.FRAUDULENT_NOTIFY_FAILURE);
